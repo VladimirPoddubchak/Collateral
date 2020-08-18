@@ -1,0 +1,43 @@
+package com.mcb.creditfactory.model;
+
+
+import lombok.*;
+
+import javax.persistence.*;
+import java.time.Year;
+import java.util.List;
+import java.util.UUID;
+
+/**
+ * Created by @author Vladimir Poddubchak @date 17.08.2020.
+ */
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity
+@Table(name = "AIRPLANE")
+@Builder
+@Getter
+public class Airplane {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private UUID id;
+    @Column(name = "brand")
+    private String brand;
+    @Column(name = "model")
+    private String model;
+    @Column(name = "manufacturer")
+    private String manufacturer;
+    @Column(name = "year_of_issue")
+    private short year;
+    @Column(name = "fuel_capacity")
+    private int fuelCapacity;
+    @Column(name = "seats")
+    private int seats;
+
+    @OneToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
+    @JoinColumn(name="collateral_id")
+    @OrderBy(value = "assess_date")
+    List<Assess> assessList;
+}

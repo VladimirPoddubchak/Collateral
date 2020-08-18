@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.UUID;
 
 // TODO: reimplement this
 @Service
@@ -15,7 +16,7 @@ public class CollateralService {
     private CarService carService;
 
     @SuppressWarnings("ConstantConditions")
-    public Long saveCollateral(Collateral object) {
+    public UUID saveCollateral(Collateral object) {
         if (!(object instanceof CarDto)) {
             throw new IllegalArgumentException();
         }

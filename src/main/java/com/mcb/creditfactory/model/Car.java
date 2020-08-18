@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.UUID;
 
 @Data
 @NoArgsConstructor
@@ -15,7 +16,7 @@ import java.math.BigDecimal;
 public class Car {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private UUID id;
     private String brand;
     private String model;
     private Double power;
@@ -23,6 +24,6 @@ public class Car {
     @Column(name = "year_of_issue")
     private Short year;
 
-    @Column(name = "assessed_value")
-    private BigDecimal value;
+//    @Column(name = "assessed_value")
+//    private BigDecimal value;
 }

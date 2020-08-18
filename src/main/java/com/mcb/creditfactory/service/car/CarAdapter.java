@@ -12,10 +12,10 @@ import java.time.LocalDate;
 public class CarAdapter implements CollateralObject {
     private CarDto car;
 
-    @Override
-    public BigDecimal getValue() {
-        return car.getValue();
-    }
+//    @Override
+//    public BigDecimal getValue() {
+//        return car.getValue();
+//    }
 
     @Override
     public Short getYear() {

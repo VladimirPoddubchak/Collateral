@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class CarServiceImpl implements CarService {
@@ -28,7 +29,7 @@ public class CarServiceImpl implements CarService {
     }
 
     @Override
-    public Optional<Car> load(Long id) {
+    public Optional<Car> load(UUID id) {
         return carRepository.findById(id);
     }
 
@@ -39,8 +40,8 @@ public class CarServiceImpl implements CarService {
                 dto.getBrand(),
                 dto.getModel(),
                 dto.getPower(),
-                dto.getYear(),
-                dto.getValue()
+                dto.getYear()
+//                dto.getValue()
         );
     }
 
@@ -51,13 +52,13 @@ public class CarServiceImpl implements CarService {
                 car.getBrand(),
                 car.getModel(),
                 car.getPower(),
-                car.getYear(),
-                car.getValue()
+                car.getYear()
+//                car.getValue()
         );
     }
 
     @Override
-    public Long getId(Car car) {
+    public UUID getId(Car car) {
         return car.getId();
     }
 }
