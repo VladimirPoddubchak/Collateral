@@ -1,5 +1,5 @@
-create extension if not exists "uuid-ossp";
 
+create extension if not exists "uuid-ossp";
 create table if not exists ASSESS (
     id  bigserial not null primary key,
     collateral_id UUID not null,

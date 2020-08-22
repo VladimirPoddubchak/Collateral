@@ -1,6 +1,7 @@
 package com.mcb.creditfactory.model;
 
 
+import com.mcb.creditfactory.external.CollateralType;
 import lombok.*;
 
 import javax.persistence.*;

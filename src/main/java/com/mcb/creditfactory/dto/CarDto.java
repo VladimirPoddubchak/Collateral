@@ -1,16 +1,19 @@
 package com.mcb.creditfactory.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.mcb.creditfactory.external.CollateralType;
+import lombok.*;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.UUID;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
+@Getter
 @JsonTypeName("car")
 public class CarDto implements Collateral {
     private UUID id;
@@ -18,5 +21,13 @@ public class CarDto implements Collateral {
     private String model;
     private Double power;
     private Short year;
-//    private BigDecimal value;
+    private AssessDto actualAssess;
+
+    @Override
+    @JsonIgnore
+    public CollateralType getType() {
+        return CollateralType.CAR;
+    }
+
+
 }

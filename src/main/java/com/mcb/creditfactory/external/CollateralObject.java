@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 public interface CollateralObject {
-//    BigDecimal getValue();
+    BigDecimal getValue();
     Short getYear();
     LocalDate getDate();
     CollateralType getType();
