@@ -24,7 +24,7 @@ public class CarDto implements Collateral {
     private AssessDto actualAssess;
 
     @Override
-    @JsonIgnore
+//    @JsonIgnore
     public CollateralType getType() {
         return CollateralType.CAR;
     }

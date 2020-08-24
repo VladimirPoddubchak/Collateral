@@ -1,6 +1,7 @@
 package com.mcb.creditfactory.service.collateral;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -11,6 +12,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 
 @Service
+@Component
 @Slf4j
 public class CommonCollateralService {
 
@@ -20,6 +22,7 @@ public class CommonCollateralService {
     public void registerService(CollateralServiceInterface<?,?> service) {
         serviceMap.put(service.getCode(),service);
         log.info("Collateral service: {} registered by key: {}",serviceMap.get(service.getCode()),service.getCode());
+        log.info("Service map: {} ",serviceMap);
     }
 
     public Map<String, CollateralServiceInterface<?,?>> getServiceMap() {
