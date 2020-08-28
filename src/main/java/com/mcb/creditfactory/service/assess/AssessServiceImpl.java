@@ -3,11 +3,14 @@ package com.mcb.creditfactory.service.assess;
 import com.mcb.creditfactory.dto.AssessDto;
 import com.mcb.creditfactory.model.Assess;
 import com.mcb.creditfactory.repository.AssessRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.stereotype.Component;
 
-import java.util.Comparator;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -15,6 +18,7 @@ import java.util.stream.Collectors;
  * Created by @author Vladimir Poddubchak @date 19.08.2020.
  */
 @Component
+@Slf4j
 public class AssessServiceImpl implements AssessService {
 
     @Autowired
@@ -22,45 +26,75 @@ public class AssessServiceImpl implements AssessService {
 
     @Override
     public AssessDto getActualAssessDto(UUID uuid) {
-        return this.getAssessDtoList(uuid).get(0);
+        if (uuid==null){
+            throw new IllegalArgumentException();
+        }
+        try{
+            Assess result = assessRepository.findActualAssessByCollateralId(uuid);
+            System.out.println(result);
+            if (result== null) {
+                throw new NoSuchElementException();
+            }
+            return this.toDto(result);
+        }catch (DataAccessException ex){
+            log.warn(ex.toString());
+            throw new DataAccessResourceFailureException("",ex);
+        }
     }
 
     @Override
     public List<AssessDto> getAssessDtoList(UUID uuid) {
+        if (uuid==null){
+            throw new IllegalArgumentException();
+        }
+        try{
+            List<AssessDto> result = this.assessRepository.findAllByCollateralId(uuid)
+                    .stream()
+                    .map(this::toDto)
+                    .collect(Collectors.toList());
+            if (result.isEmpty()) {
+                throw new NoSuchElementException();
+            }
+            return result;
 
-        return assessRepository.findAllByCollateralId(uuid)
-                .stream()
-                .map(this::toDto).sorted(Comparator.comparing(AssessDto::getDate))
-                .collect(Collectors.toList());
+        }catch (DataAccessException ex){
+            log.warn(ex.toString());
+            throw new DataAccessResourceFailureException("",ex);
+        }
     }
 
     @Override
     public Assess fromDto(AssessDto dto) {
         return Assess.builder()
-                .type(dto.getType())
+                .collateralId(dto.getCollateralId())
+                .type(dto.getCollateralType())
                 .value(dto.getValue())
-                .assessDate(dto.getDate())
+                .assessDate(dto.getAssessDate())
                 .status(dto.isStatus())
                 .build();
     }
 
     @Override
     public AssessDto toDto(Assess assess) {
-        return null;
+        return AssessDto.builder()
+                .id(assess.getId())
+                .collateralType(assess.getType())
+                .collateralId(assess.getCollateralId())
+                .value(assess.getValue())
+                .assessDate(assess.getAssessDate())
+                .status(assess.getStatus())
+                .build();
     }
 
     @Override
-    public List<AssessDto> toAssessDtoList(List<Assess> assessList) {
-
-        return assessList.stream()
-                .map(this::toDto)
-                .collect(Collectors.toList());
+    public Assess save(Assess assess) {
+        return assessRepository.save(assess);
     }
 
     @Override
-    public List<Assess> fromAssessDtoList(List<AssessDto> assessDtoList) {
-        return assessDtoList.stream()
-                .map(this::fromDto)
-                .collect(Collectors.toList());
+    public Assess saveDto(AssessDto dto) {
+        return assessRepository.save(this.fromDto(dto));
     }
+
+
 }

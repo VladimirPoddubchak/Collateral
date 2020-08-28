@@ -16,7 +16,6 @@ public class CollateralService {
     @Autowired
     CommonCollateralService collateralService;
 
-
     @SuppressWarnings("ConstantConditions")
     public UUID saveCollateral(Collateral dto) {
 
@@ -31,13 +30,7 @@ public class CollateralService {
             return null;
         }
 
-
-        return Optional.of(dto)
-                .map(service::fromDto)
-                .map(service::save)
-                .map(service::getId)
-                .orElse(null);
-//        return service.getId(service.save(dto));
+        return service.saveDto(dto);
     }
 
     public Collateral getInfo(Collateral dto) {

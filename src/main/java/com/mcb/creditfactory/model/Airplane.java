@@ -35,8 +35,4 @@ public class Airplane {
     @Column(name = "seats")
     private int seats;
 
-    @OneToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
-    @JoinColumn(name="collateral_id")
-    @OrderBy(value = "assess_date")
-    List<Assess> assessList;
 }

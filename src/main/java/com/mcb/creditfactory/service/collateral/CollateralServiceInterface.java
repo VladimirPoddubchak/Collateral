@@ -1,7 +1,9 @@
 package com.mcb.creditfactory.service.collateral;
 
+import com.mcb.creditfactory.dto.CarDto;
 import com.mcb.creditfactory.dto.Collateral;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -18,10 +20,13 @@ public interface CollateralServiceInterface<T, D> {
     D toDto (T object);
 
     boolean approve(D dto);
-    T save (T object);
+
+    UUID saveDto(Collateral dto);
+
     Optional<T> load (UUID id);
 
     UUID getId(T object);
+
     String getCode();
 
     @Autowired
@@ -29,9 +34,9 @@ public interface CollateralServiceInterface<T, D> {
         service.registerService(this);
     }
 
-    BigDecimal getValue(Collateral object);
+    BigDecimal getValue(Collateral dto);
 
-    Short getYear(Collateral object);
+    Short getYear(Collateral dto);
 
-    LocalDate getDate(Collateral object);
+    LocalDate getDate(Collateral dto);
 }

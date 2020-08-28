@@ -17,9 +17,10 @@ import java.util.UUID;
 @Builder
 @Getter
 public class AssessDto {
-    private UUID id;
-    private CollateralType type;
-    private LocalDateTime date;
+    private Long id;
+    private UUID collateralId;
+    private CollateralType collateralType;
+    private LocalDateTime assessDate;
     private BigDecimal value;
     private boolean status;
 }

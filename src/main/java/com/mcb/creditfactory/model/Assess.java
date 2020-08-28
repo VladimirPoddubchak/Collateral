@@ -25,12 +25,12 @@ public class Assess {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "collateral_id")
+    private UUID collateralId;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "collateral_type")
     private CollateralType type;
-
-    @Column(name = "collateral_id")
-    private UUID collateralId;
 
     @Column(name = "assess_date")
     private LocalDateTime assessDate;

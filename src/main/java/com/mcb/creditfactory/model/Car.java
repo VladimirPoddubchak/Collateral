@@ -25,9 +25,4 @@ public class Car {
     private Double power;
     @Column(name = "year_of_issue")
     private Short year;
-
-    @OneToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
-    @JoinColumn(name="collateral_id")
-    @OrderBy(value = "assess_date")
-    List<Assess> assessList;
 }

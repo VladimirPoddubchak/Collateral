@@ -15,6 +15,6 @@ public interface AssessService {
     List<AssessDto> getAssessDtoList(UUID uuid);
     Assess fromDto (AssessDto dto);
     AssessDto toDto(Assess assess);
-    List<AssessDto> toAssessDtoList(List<Assess> assessList);
-    List<Assess> fromAssessDtoList(List<AssessDto> assessDtoList);
+    Assess save (Assess assess);
+    Assess saveDto (AssessDto dto);
 }
