@@ -1,11 +1,13 @@
 package com.mcb.creditfactory.service;
 
+import com.mcb.creditfactory.dto.AssessDto;
 import com.mcb.creditfactory.dto.Collateral;
 import com.mcb.creditfactory.service.collateral.CommonCollateralService;
 import com.mcb.creditfactory.service.collateral.CollateralServiceInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -24,11 +26,7 @@ public class CollateralService {
         }
 
         CollateralServiceInterface service = collateralService.getServiceMap().get(dto.getType().toString());
-
-        boolean approved = service.approve(dto);
-        if (!approved) {
-            return null;
-        }
+        service.approve(dto);
 
         return service.saveDto(dto);
     }
@@ -41,18 +39,25 @@ public class CollateralService {
         CollateralServiceInterface service = collateralService.getServiceMap().get(dto.getType().toString());
 
 
-        return (Collateral) Optional.of(dto)
-                .map(service::fromDto)
-                .map(service::getId)
-                .flatMap(service::load)
-                .map(service::toDto)
-                .orElse(null);
-
+        return (Collateral) service.toDto(service.load(service.getId(service.fromDto(dto))));
     }
 
+    public Collateral addAssess (AssessDto assessDto) {
 
+        if (!(assessDto instanceof AssessDto)) {
+            throw new IllegalArgumentException();
+        }
 
+        CollateralServiceInterface service = collateralService.getServiceMap().get(assessDto.getCollateralType().toString());
 
+        return service.addAssess(assessDto);
+    }
+
+    public List<AssessDto> assessList(Collateral dto) {
+        CollateralServiceInterface service = collateralService.getServiceMap().get(dto.getType().toString());
+
+        return service.assessList(dto);
+    }
 
 
 //    @Autowired

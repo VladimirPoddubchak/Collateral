@@ -16,8 +16,8 @@ import java.util.UUID;
 @AllArgsConstructor
 @Builder
 @Getter
-@JsonTypeName("car")
-public class CarDto implements Collateral, CollateralObject {
+@JsonTypeName(value = "car")
+public class CarDto extends Collateral implements CollateralObject {
     private UUID id;
     private String brand;
     private String model;

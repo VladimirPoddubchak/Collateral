@@ -7,9 +7,10 @@ import com.mcb.creditfactory.external.CollateralType;
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 @JsonSubTypes({
         @JsonSubTypes.Type(value = CarDto.class),
-        @JsonSubTypes.Type(value = AirplaneDto.class)
+        @JsonSubTypes.Type(value = AirplaneDto.class),
 })
-public interface Collateral {
 
-    CollateralType getType();
+public abstract class Collateral {
+
+    public abstract CollateralType getType();
 }

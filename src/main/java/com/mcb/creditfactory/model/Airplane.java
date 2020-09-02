@@ -29,7 +29,7 @@ public class Airplane {
     @Column(name = "manufacturer")
     private String manufacturer;
     @Column(name = "year_of_issue")
-    private short year;
+    private Short year;
     @Column(name = "fuel_capacity")
     private int fuelCapacity;
     @Column(name = "seats")

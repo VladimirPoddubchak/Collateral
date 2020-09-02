@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -62,15 +63,17 @@ public class CarServiceImpl implements CollateralServiceInterface<Car, CarDto> {
     }
 
     @Override
-    public boolean approve(CarDto dto) {
-        return approveService.approve(dto)==0;
+    public boolean approve(Collateral dto) {
+        boolean isApproved = approveService.approve((CollateralObject) dto)==0;
+        ((CarDto) dto).getActualAssessDto().setStatus(isApproved);
+        return isApproved;
     }
 
     @Override
     @Transactional
-    public UUID saveDto(Collateral dto) {
+    public UUID saveDto(CarDto dto) {
         Car savedCar = carRepository.save(this.fromDto(dto));
-        AssessDto assessDto = ((CarDto)dto).getActualAssessDto();
+        AssessDto assessDto = (dto).getActualAssessDto();
         assessDto.setCollateralType(CollateralType.CAR);
         assessDto.setCollateralId(savedCar.getId());
         assessService.saveDto(assessDto);
@@ -78,8 +81,8 @@ public class CarServiceImpl implements CollateralServiceInterface<Car, CarDto> {
     }
 
     @Override
-    public Optional<Car> load(UUID id) {
-        return carRepository.findById(id);
+    public Car load(UUID id) {
+        return carRepository.findById(id).orElseThrow(IllegalArgumentException::new);
     }
 
     @Override
@@ -105,6 +108,20 @@ public class CarServiceImpl implements CollateralServiceInterface<Car, CarDto> {
     @Override
     public LocalDate getDate(Collateral dto) {
         return assessService.getActualAssessDto(((CarDto)dto).getId()).getAssessDate().toLocalDate();
+    }
+
+    @Override
+    @Transactional
+    public Collateral addAssess(AssessDto assessDto) {
+        Car car =  this.load(assessDto.getCollateralId());
+        assessService.saveDto(assessDto);
+        return this.toDto(car);
+    }
+
+    @Override
+    public List<AssessDto> assessList(Collateral dto) {
+        CarDto carDto = (CarDto) dto;
+        return assessService.getAssessDtoList(carDto.getId());
     }
 }
 

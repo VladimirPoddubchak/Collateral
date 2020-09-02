@@ -18,10 +18,10 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonTypeName("airplane")
+@JsonTypeName(value = "airplane")
 @Builder
 @Getter
-public class AirplaneDto implements Collateral, CollateralObject {
+public class AirplaneDto extends Collateral implements CollateralObject {
     private UUID id;
     private CollateralType collateralType;
     private String brand;

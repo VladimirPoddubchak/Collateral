@@ -1,6 +1,8 @@
 package com.mcb.creditfactory.service.assess;
 
 import com.mcb.creditfactory.dto.AssessDto;
+import com.mcb.creditfactory.dto.Collateral;
+import com.mcb.creditfactory.external.CollateralType;
 import com.mcb.creditfactory.model.Assess;
 
 import java.util.List;
@@ -17,4 +19,5 @@ public interface AssessService {
     AssessDto toDto(Assess assess);
     Assess save (Assess assess);
     Assess saveDto (AssessDto dto);
+    Collateral addAssess (AssessDto dto);
 }

@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -43,14 +44,25 @@ public class AirplaneServiceImpl implements CollateralServiceInterface<Airplane,
     @Override
     public Airplane fromDto(Collateral dto) {
         AirplaneDto airplaneDto = (AirplaneDto) dto;
-        return  new Airplane(
-                airplaneDto.getId(),
-                airplaneDto.getBrand(),
-                airplaneDto.getModel(),
-                airplaneDto.getManufacturer(),
-                airplaneDto.getYear(),
-                airplaneDto.getFuelCapacity(),
-                airplaneDto.getSeats());
+        return  Airplane.builder()
+                .id(airplaneDto.getId())
+                .brand(airplaneDto.getBrand())
+                .model(airplaneDto.getModel())
+                .manufacturer(airplaneDto.getManufacturer())
+                .year(airplaneDto.getYear())
+                .fuelCapacity(airplaneDto.getFuelCapacity())
+                .seats(airplaneDto.getSeats())
+                .build();
+
+
+//        return  new Airplane(
+//                airplaneDto.getId(),
+//                airplaneDto.getBrand(),
+//                airplaneDto.getModel(),
+//                airplaneDto.getManufacturer(),
+//                airplaneDto.getYear(),
+//                airplaneDto.getFuelCapacity(),
+//                airplaneDto.getSeats());
     }
 
     @Override
@@ -68,15 +80,17 @@ public class AirplaneServiceImpl implements CollateralServiceInterface<Airplane,
     }
 
     @Override
-    public boolean approve(AirplaneDto dto) {
-        return approveService.approve(dto)==0;
+    public boolean approve(Collateral dto) {
+        boolean isApproved = approveService.approve((CollateralObject) dto)==0;
+        ((AirplaneDto) dto).getActualAssessDto().setStatus(isApproved);
+        return isApproved;
     }
 
     @Override
     @Transactional
-    public UUID saveDto(Collateral dto) {
+    public UUID saveDto(AirplaneDto dto) {
         Airplane savedAirplane = airplaneRepository.save(this.fromDto(dto));
-        AssessDto assessDto = ((AirplaneDto)dto).getActualAssessDto();
+        AssessDto assessDto = (dto).getActualAssessDto();
         assessDto.setCollateralType(CollateralType.AIRPLANE);
         assessDto.setCollateralId(savedAirplane.getId());
         assessService.saveDto(assessDto);
@@ -84,8 +98,8 @@ public class AirplaneServiceImpl implements CollateralServiceInterface<Airplane,
     }
 
     @Override
-    public Optional<Airplane> load(UUID id) {
-        return airplaneRepository.findById(id);
+    public Airplane load(UUID id) {
+        return airplaneRepository.findById(id).orElseThrow(IllegalArgumentException::new);
     }
 
     @Override
@@ -105,11 +119,22 @@ public class AirplaneServiceImpl implements CollateralServiceInterface<Airplane,
 
     @Override
     public Short getYear(Collateral dto) {
-        return ((Airplane) dto).getYear();
+        return ((AirplaneDto) dto).getYear();
     }
 
     @Override
     public LocalDate getDate(Collateral dto) {
         return assessService.getActualAssessDto(((AirplaneDto)dto).getId()).getAssessDate().toLocalDate();
+    }
+
+    @Override
+    public Collateral addAssess(AssessDto assessDto) {
+        return null;
+    }
+
+    @Override
+    public List<AssessDto> assessList(Collateral dto) {
+        AirplaneDto airplaneDto = (AirplaneDto  ) dto;
+        return assessService.getAssessDtoList(airplaneDto.getId());
     }
 }

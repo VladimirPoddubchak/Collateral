@@ -1,5 +1,7 @@
 package com.mcb.creditfactory.dto;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.mcb.creditfactory.external.CollateralType;
 import lombok.*;
 
@@ -16,6 +18,9 @@ import java.util.UUID;
 @AllArgsConstructor
 @Builder
 @Getter
+//@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
+//@JsonTypeName("assess")
+
 public class AssessDto {
     private Long id;
     private UUID collateralId;

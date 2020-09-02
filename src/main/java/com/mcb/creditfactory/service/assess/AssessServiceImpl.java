@@ -1,8 +1,12 @@
 package com.mcb.creditfactory.service.assess;
 
 import com.mcb.creditfactory.dto.AssessDto;
+import com.mcb.creditfactory.dto.Collateral;
+import com.mcb.creditfactory.external.CollateralType;
 import com.mcb.creditfactory.model.Assess;
 import com.mcb.creditfactory.repository.AssessRepository;
+import com.mcb.creditfactory.service.collateral.CollateralServiceInterface;
+import com.mcb.creditfactory.service.collateral.CommonCollateralService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -23,6 +27,9 @@ public class AssessServiceImpl implements AssessService {
 
     @Autowired
     AssessRepository assessRepository;
+
+    @Autowired
+    CommonCollateralService commonCollateralService;
 
     @Override
     public AssessDto getActualAssessDto(UUID uuid) {
@@ -96,5 +103,10 @@ public class AssessServiceImpl implements AssessService {
         return assessRepository.save(this.fromDto(dto));
     }
 
-
+    @Override
+    public Collateral addAssess(AssessDto dto) {
+        this.saveDto(dto);
+        CollateralServiceInterface service = commonCollateralService.getServiceMap().get(dto.getCollateralType().toString());
+        return (Collateral) service.toDto(service.load(dto.getCollateralId()));
+    }
 }
