@@ -1,14 +1,12 @@
-package com.mcb.creditfactory.service;
+package com.mcb.creditfactory.service.collateral;
 
 import com.mcb.creditfactory.dto.AssessDto;
 import com.mcb.creditfactory.dto.Collateral;
-import com.mcb.creditfactory.service.collateral.CommonCollateralService;
-import com.mcb.creditfactory.service.collateral.CollateralServiceInterface;
+import com.mcb.creditfactory.model.CollateralModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 // TODO: reimplement this
@@ -19,43 +17,28 @@ public class CollateralService {
     CommonCollateralService collateralService;
 
     @SuppressWarnings("ConstantConditions")
-    public UUID saveCollateral(Collateral dto) {
+      public<M extends CollateralModel, D extends Collateral> UUID saveCollateral(D dto) {
 
-        if (!(dto instanceof Collateral)) {
-            throw new IllegalArgumentException();
-        }
-
-        CollateralServiceInterface service = collateralService.getServiceMap().get(dto.getType().toString());
+        CollateralServiceInterface<M,D> service = (CollateralServiceInterface<M, D>) collateralService.getServiceMap().get(dto.getType().toString());
         service.approve(dto);
-
         return service.saveDto(dto);
     }
 
-    public Collateral getInfo(Collateral dto) {
-        if (!(dto instanceof Collateral)) {
-            throw new IllegalArgumentException();
-        }
+    public <M extends CollateralModel, D extends Collateral> Collateral getCollateralInfo(D dto) {
 
-        CollateralServiceInterface service = collateralService.getServiceMap().get(dto.getType().toString());
-
-
+        CollateralServiceInterface<M,D> service = (CollateralServiceInterface<M, D>) collateralService.getServiceMap().get(dto.getType().toString());
         return (Collateral) service.toDto(service.load(service.getId(service.fromDto(dto))));
     }
 
-    public Collateral addAssess (AssessDto assessDto) {
+    public <D extends Collateral> D addAssess (AssessDto assessDto) {
 
-        if (!(assessDto instanceof AssessDto)) {
-            throw new IllegalArgumentException();
-        }
-
-        CollateralServiceInterface service = collateralService.getServiceMap().get(assessDto.getCollateralType().toString());
-
-        return service.addAssess(assessDto);
+        CollateralServiceInterface<? extends CollateralModel,? extends Collateral> service = collateralService.getServiceMap().get(assessDto.getCollateralType().toString());
+        return (D) service.addAssess(assessDto);
     }
 
-    public List<AssessDto> assessList(Collateral dto) {
-        CollateralServiceInterface service = collateralService.getServiceMap().get(dto.getType().toString());
+    public <M extends CollateralModel, D extends Collateral> List<AssessDto> assessList(D  dto) {
 
+        CollateralServiceInterface<M,D> service = (CollateralServiceInterface<M, D>) collateralService.getServiceMap().get(dto.getType().toString());
         return service.assessList(dto);
     }
 

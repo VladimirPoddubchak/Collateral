@@ -20,6 +20,7 @@ spring:
     schemas:
       - collateral
     locations: classpath:db\migration
+
 #springdoc:
 #  swagger-ui:
 #    path:  /api/doc

@@ -99,14 +99,15 @@ public class AssessServiceImpl implements AssessService {
     }
 
     @Override
-    public Assess saveDto(AssessDto dto) {
-        return assessRepository.save(this.fromDto(dto));
+    public AssessDto saveDto(AssessDto dto) {
+        return this.toDto(assessRepository.save(this.fromDto(dto)));
     }
 
     @Override
-    public Collateral addAssess(AssessDto dto) {
-        this.saveDto(dto);
+    public <D extends Collateral> D addAssess(AssessDto dto) {
         CollateralServiceInterface service = commonCollateralService.getServiceMap().get(dto.getCollateralType().toString());
-        return (Collateral) service.toDto(service.load(dto.getCollateralId()));
+        this.saveDto(dto);
+        return (D) service.toDto(service.load(dto.getCollateralId()));
     }
+
 }

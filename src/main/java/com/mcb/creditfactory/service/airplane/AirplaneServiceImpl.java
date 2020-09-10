@@ -3,14 +3,11 @@ package com.mcb.creditfactory.service.airplane;
 import com.mcb.creditfactory.dto.AirplaneDto;
 import com.mcb.creditfactory.dto.AssessDto;
 import com.mcb.creditfactory.dto.CarDto;
-import com.mcb.creditfactory.dto.Collateral;
 import com.mcb.creditfactory.external.CollateralObject;
 import com.mcb.creditfactory.external.CollateralType;
 import com.mcb.creditfactory.external.ExternalApproveService;
 import com.mcb.creditfactory.model.Airplane;
-import com.mcb.creditfactory.model.Car;
 import com.mcb.creditfactory.repository.AirplaneRepository;
-import com.mcb.creditfactory.repository.CarRepository;
 import com.mcb.creditfactory.service.assess.AssessService;
 import com.mcb.creditfactory.service.collateral.CollateralServiceInterface;
 import lombok.extern.slf4j.Slf4j;
@@ -18,10 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -42,27 +36,16 @@ public class AirplaneServiceImpl implements CollateralServiceInterface<Airplane,
     ExternalApproveService approveService;
 
     @Override
-    public Airplane fromDto(Collateral dto) {
-        AirplaneDto airplaneDto = (AirplaneDto) dto;
+    public Airplane fromDto(AirplaneDto dto) {
         return  Airplane.builder()
-                .id(airplaneDto.getId())
-                .brand(airplaneDto.getBrand())
-                .model(airplaneDto.getModel())
-                .manufacturer(airplaneDto.getManufacturer())
-                .year(airplaneDto.getYear())
-                .fuelCapacity(airplaneDto.getFuelCapacity())
-                .seats(airplaneDto.getSeats())
+                .id(dto.getId())
+                .brand(dto.getBrand())
+                .model(dto.getModel())
+                .manufacturer(dto.getManufacturer())
+                .year(dto.getYear())
+                .fuelCapacity(dto.getFuelCapacity())
+                .seats(dto.getSeats())
                 .build();
-
-
-//        return  new Airplane(
-//                airplaneDto.getId(),
-//                airplaneDto.getBrand(),
-//                airplaneDto.getModel(),
-//                airplaneDto.getManufacturer(),
-//                airplaneDto.getYear(),
-//                airplaneDto.getFuelCapacity(),
-//                airplaneDto.getSeats());
     }
 
     @Override
@@ -80,10 +63,10 @@ public class AirplaneServiceImpl implements CollateralServiceInterface<Airplane,
     }
 
     @Override
-    public boolean approve(Collateral dto) {
-        boolean isApproved = approveService.approve((CollateralObject) dto)==0;
-        ((AirplaneDto) dto).getActualAssessDto().setStatus(isApproved);
-        return isApproved;
+    public AirplaneDto approve(AirplaneDto dto) {
+        boolean isApproved = approveService.approve(dto)==0;
+        dto.getActualAssessDto().setStatus(isApproved);
+        return dto;
     }
 
     @Override
@@ -113,28 +96,20 @@ public class AirplaneServiceImpl implements CollateralServiceInterface<Airplane,
     }
 
     @Override
-    public BigDecimal getValue(Collateral dto) {
-        return assessService.getActualAssessDto(((AirplaneDto)dto).getId()).getValue();
+    public AirplaneDto addAssess(AssessDto assessDto) {
+        if((assessDto==null)||(assessDto.getCollateralId()==null)||(assessDto.getCollateralType()==null)
+                ||(assessDto.getValue()==null)||(assessDto.getAssessDate()==null)){
+            throw new IllegalArgumentException();
+        }
+
+        AirplaneDto airplaneDto =  this.toDto(load(assessDto.getCollateralId()));
+        airplaneDto.setActualAssessDto(assessDto);
+        airplaneDto.setActualAssessDto(assessService.saveDto(approve(airplaneDto).getActualAssessDto()));
+        return airplaneDto;
     }
 
     @Override
-    public Short getYear(Collateral dto) {
-        return ((AirplaneDto) dto).getYear();
-    }
-
-    @Override
-    public LocalDate getDate(Collateral dto) {
-        return assessService.getActualAssessDto(((AirplaneDto)dto).getId()).getAssessDate().toLocalDate();
-    }
-
-    @Override
-    public Collateral addAssess(AssessDto assessDto) {
-        return null;
-    }
-
-    @Override
-    public List<AssessDto> assessList(Collateral dto) {
-        AirplaneDto airplaneDto = (AirplaneDto  ) dto;
-        return assessService.getAssessDtoList(airplaneDto.getId());
+    public List<AssessDto> assessList(AirplaneDto dto) {
+        return assessService.getAssessDtoList(dto.getId());
     }
 }

@@ -2,6 +2,8 @@ package com.mcb.creditfactory.dto;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonTypeName;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.mcb.creditfactory.external.CollateralType;
 import lombok.*;
 
@@ -25,6 +27,7 @@ public class AssessDto {
     private Long id;
     private UUID collateralId;
     private CollateralType collateralType;
+    @JsonSerialize(using = ToStringSerializer.class)
     private LocalDateTime assessDate;
     private BigDecimal value;
     private boolean status;

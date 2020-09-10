@@ -13,7 +13,7 @@ import java.util.UUID;
 @Builder
 @Entity
 @Table(name = "CAR")
-public class Car {
+public class Car extends CollateralModel{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;

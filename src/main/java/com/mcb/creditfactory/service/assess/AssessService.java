@@ -18,6 +18,6 @@ public interface AssessService {
     Assess fromDto (AssessDto dto);
     AssessDto toDto(Assess assess);
     Assess save (Assess assess);
-    Assess saveDto (AssessDto dto);
-    Collateral addAssess (AssessDto dto);
+    AssessDto saveDto (AssessDto dto);
+    <D extends Collateral > D addAssess (AssessDto dto);
 }
