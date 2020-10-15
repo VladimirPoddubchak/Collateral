@@ -1,0 +1,32 @@
+spring:
+  jpa:
+    database: POSTGRESQL
+    show-sql: true
+    hibernate:
+      ddl: false
+      ddl-auto: validate
+
+  datasource:
+    platform: org.hibernate.dialect.PostgreSQL95Dialect
+    url: jdbc:postgresql://127.0.0.1:5432/collateral_db?currentSchema=collateral
+    username: postgres
+    password: root
+    driverClassName: org.postgresql.Driver
+
+  flyway:
+    user: postgres
+    password: root
+    url: jdbc:postgresql://127.0.0.1:5432/collateral_db
+    schemas:
+      - collateral
+    locations: classpath:db\migration
+
+#springdoc:
+#  swagger-ui:
+#    path:  /api/doc
+#    outputfileName: api.yml
+#    outputDir:   ${project.build.directory}
+
+server:
+  error:
+    include-message: always
